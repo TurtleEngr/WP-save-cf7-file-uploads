@@ -11,4 +11,4 @@
     name.
 
 -   Source, see:
-    <https://github.com/TurtleEngr/WP-store-file-uploads-for-contact-form-7/tree/tags-1.3.0>
+    <https://github.com/TurtleEngr/WP-store-cf7-file-uploads>

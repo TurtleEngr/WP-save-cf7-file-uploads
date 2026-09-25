@@ -38,7 +38,7 @@ update :
 	git co develop
 	git pull origin develop
 
-build : dist-clean update $(mDocList) $(mProduct)
+build : clean update $(mDocList) $(mProduct)
 	@echo 'If OK, make save'
 
 save development : check-dev
