@@ -69,7 +69,6 @@ publish release : check-rel
 	incver.sh -p
 	git ci -am Updated
 	git push origin develop
-	git ci -am Updated
 	@echo 'If done, make dist-clean'
 
 clean :
