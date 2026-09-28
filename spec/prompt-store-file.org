@@ -1,0 +1,158 @@
+* Prompts
+
+- Claude Project: Enhance Store Attachments
+- Enhance Store Contact form 7 attachments
+
+** Prompt1
+- Start from the beginning with these new instructions.
+
+*** Goal: Add this enhancement to WP-store-file-uploads-for-contact-form-7
+1. Normalize file names. File names can only contain letters in the
+   set: [a-zA-Z0-9.-\_]
+   + Do this by converting any letters not in the set to a "\_".
+   + Then convert duplicate "\_" letters to one "\_".
+   + The "post\_title" should use the normalized file name.
+2. Check the file types. Only graphic files (png, jpg, jpeg) and pdf
+   files are allowed. Only log the error.
+3. Avoid overwriting existing files.
+   + If a file already exists, append "\_N" after the base file name
+     (but before the extension)), where "N" is initially "1". While a
+     file exists, increment "N". Then save the file.
+
+- To implement this, follow the directions in CLAUDE.org
+
+*** Code locations
++ The main code can be found at:
+  https://github.com/TurtleEngr/WP-store-file-uploads-for-contact-form-7/tree/tags-1.3.0
+
++ See readme.txt for what this implements.
+
++ If you need to see the code for "contact-form-7", see:
+  https://github.com/TurtleEngr/WP-contact-form-7-clone/tree/tags-6.1.7
+
++ If you need to see the code for "flamingo", see:
+  https://github.com/TurtleEngr/WP-flamingo-clone/tree/tags-2.6.4
+
+** Response 1
+
+- Let me check how CF7 names and filters uploads, since that affects
+  what this plugin receives.Now the tests. The 'wp\_check\_filetype'
+  stub copies WordPress core's matching logic (a case-insensitive
+  regex on the extension).I started again from a fresh clone of
+  'tags-1.3.0'. The complete updated plugin file is below. Only
+  'nmr\_create\_attachment()' changed, plus two helper functions added
+  above it. The new code follows the file's existing style: 'nmr\_'
+  prefix and 4-space indent.
+
+*** What changed:
+
+1. *File names.* 'nmr\_normalize\_file\_name()' turns any character
+   outside 'a-zA-Z0-9.\_-' into '\_', then collapses repeated '\_' into
+   one. For example, 'My Photo (1).JPG' becomes
+   'My\_Photo\_1\_.JPG'. 'post\_title' now uses this normalized name, with
+   the extension removed as before.
+2. *File types.* The existing 'wp\_check\_filetype()' call now gets an
+   explicit list: png, jpg, svg, pdf. That one call does both the
+   check and the MIME type lookup, so SVGs get 'image/svg+xml' even
+   though WordPress doesn't allow SVG by default. For any other type,
+   the file is not saved, one line goes to 'error\_log()', and the form
+   and its email carry on as normal.
+3. *No overwrites.* 'nmr\_unique\_file\_name()' turns 'x.jpg' into
+   'x\_1.jpg', 'x\_2.jpg', and so on, until it finds an unused name.
+
+*** Verification:
+- the file passes 'php -l'. A stubbed test also passed. It covered the
+  normalization cases, '\_N' numbering (including skipping an existing
+  '\_1'), 'post\_title' and MIME values, and rejection plus logging of
+  '.jpeg', '.txt' and '.php'.
+
+*** Assumptions to check:
+
+- *'.jpeg' is rejected.* I followed your list literally, so
+  'photo.jpeg' is not saved. To allow it, change the key to
+  ''jpg|jpeg' => 'image/jpeg''.
+- *Type check uses the extension only.* It's case-insensitive, so
+  'logo.SVG' passes. It does not look at file content, which matches
+  how CF7 itself checks. Content sniffing wouldn't work for SVG
+  anyway, because WordPress core doesn't know that type.
+- *'post\_title' has no '\_N' suffix.* It uses the normalized name, so
+  three uploads of 'My Pic.png' are saved as three separate files but
+  all have the title 'My\_Pic'.
+- *Order of steps.* The uniqueness check runs after the
+  'nmr\_create\_attachment\_file\_name' filter, so no filter can cause an
+  overwrite.
+
+*** Things to know:
+
+- *CF7 blocks PDF and SVG by default.* Its default upload types are
+  'audio/*', 'video/*' and 'image/*'. So PDFs, and SVGs (which
+  WordPress doesn't list), are rejected before this plugin ever sees
+  them. Add 'filetypes:png|jpg|svg|pdf' to the form's '[file]' tag.
+- *SVG security risk.* SVG files can contain JavaScript. When saved
+  in the Media Library, they can be opened by URL on your domain,
+  which is a cross-site scripting risk.
+- *Left alone as pre-existing:*
+  + If 'nmr\_should\_skip\_save\_attachment\_to\_media\_library' returns
+    true, '$attach\_id' and '$attach\_data' are undefined, so PHP gives
+    a warning.
+  + The return value of 'copy()' is never checked.
+  + 'readme.txt' and the version number are not updated.
+
+- Should '.jpeg' be accepted along with '.jpg'?
+
+** Prompt2
+
+*** Update the code with these changes.
+
++ Ignore svg and pdf files.
++ Check for allowed WordPress files types by looking a the file
+  content, i.e. not by the file's extension.
++ Include any "\_N" to the "post\_title"
+
+** Response2
+
+- I'll confirm how WordPress core detects an image's type from its
+  content before relying on it.Now the tests, using real images
+  generated with GD. The 'wp\_get\_image\_mime' stub uses the same
+  'getimagesize()' path as WP core, and 'get\_allowed\_mime\_types'
+  returns WP's default image types.The complete updated plugin file is
+  below. The changes are all inside 'nmr\_create\_attachment()':
+
+- *SVG and PDF are no longer accepted.* Both are now rejected and
+  logged like any other disallowed type.
+- *File type is checked by content.* 'wp\_get\_image\_mime($filename)'
+  reads the file's bytes, and the result must also be in
+  'get\_allowed\_mime\_types()'. If either check fails, the file is not
+  saved and one line goes to 'error\_log()'. The MIME type found this
+  way is also used for 'post\_mime\_type'.
+- *'post\_title' now includes '\_N'.* It is taken from the final saved
+  file name, with the extension removed. So three uploads of 'My
+  Pic.png' get the titles 'My\_Pic', 'My\_Pic\_1' and 'My\_Pic\_2'.
+- *Cleanup:* the '$normFileName' variable was no longer needed, so I
+  removed it (CLAUDE.org §3).
+
+** Verification:
+- the file passes 'php -l', and a test with real PNG, JPEG, GIF and
+  WebP images passed:
+
+- A text file named 'fake.jpg' was rejected, as were the SVG, the PDF
+  and a '.txt' file.
+- A PNG saved as 'png-inside.jpg' was accepted and recorded as
+  'image/png'.
+- A real WebP was rejected once WebP was taken off WordPress's allowed
+  list.
+
+** Assumptions to check:
+
+- *Only image types are accepted.* I read "allowed WordPress file
+  types" together with the earlier "graphic files" requirement as
+  images only. On a default install that means jpg, gif, png, bmp,
+  tiff, webp, avif, heic and ico. Non-image WordPress types such as
+  '.docx' or '.mp3' are rejected, because 'wp\_get\_image\_mime()' only
+  recognizes images.
+- *The extension is kept as uploaded.* In the 'png-inside.jpg' case,
+  the file is saved with a '.jpg' name but a correct 'image/png' MIME
+  type. Fixing the extension would be a small extra change.
+
+- Should non-image WordPress types, such as documents or audio, also
+  be allowed if their content matches?
