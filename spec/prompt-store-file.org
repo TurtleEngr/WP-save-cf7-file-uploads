@@ -3,7 +3,7 @@
 - Claude Project: Enhance Store Attachments
 - Enhance Store Contact form 7 attachments
 
-** Prompt1
+** Prompt 1
 - Start from the beginning with these new instructions.
 
 *** Goal: Add this enhancement to WP-store-file-uploads-for-contact-form-7
@@ -100,7 +100,7 @@
 
 - Should '.jpeg' be accepted along with '.jpg'?
 
-** Prompt2
+** Prompt 2
 
 *** Update the code with these changes.
 
@@ -109,7 +109,7 @@
   content, i.e. not by the file's extension.
 + Include any "\_N" to the "post\_title"
 
-** Response2
+** Response 2
 
 - I'll confirm how WordPress core detects an image's type from its
   content before relying on it.Now the tests, using real images
@@ -131,7 +131,7 @@
 - *Cleanup:* the '$normFileName' variable was no longer needed, so I
   removed it (CLAUDE.org §3).
 
-** Verification:
+*** Verification:
 - the file passes 'php -l', and a test with real PNG, JPEG, GIF and
   WebP images passed:
 
@@ -142,7 +142,7 @@
 - A real WebP was rejected once WebP was taken off WordPress's allowed
   list.
 
-** Assumptions to check:
+*** Assumptions to check:
 
 - *Only image types are accepted.* I read "allowed WordPress file
   types" together with the earlier "graphic files" requirement as
@@ -156,3 +156,28 @@
 
 - Should non-image WordPress types, such as documents or audio, also
   be allowed if their content matches?
+** Prompt 3
+- Rewrite the code in store-cf7-file-uploads.php
+
+*** Spec
+
++ Change prefix text from "nmr" to "bar" in all places.
++ Remove references and code related to the Pro version.
++ Remove code related to the pro version.
++ Remove the upsell related functions functions:
+  nmr_sfucf7_render_upsell_page, nmr_sfucf7_upsell_settings_tab,
+  nmr_sfucf7_upsell_advanced_tab, nmr_sfucf7_upsell_log_tab
+
++ Follow the directions in CLAUDE.org
+
+*** Code locations
++ The main code can be found at:
+  https://github.com/TurtleEngr/WP-store-cf7-file-uploads/tree/develop
+
++ See README.org and readme.txt for what this implements.
+
++ If you need to see the code for "contact-form-7", see:
+  https://github.com/TurtleEngr/WP-contact-form-7-clone/tree/tags-6.1.7
+
++ If you need to see the code for "flamingo", see:
+  https://github.com/TurtleEngr/WP-flamingo-clone/tree/tags-2.6.4
