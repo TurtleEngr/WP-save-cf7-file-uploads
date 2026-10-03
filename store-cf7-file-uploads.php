@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Store file uploads for Contact Form 7
-Plugin URI: https://github.com/TurtleEngr/WP-store-cf7-file-uploads
+Plugin URI: https://github.com/TurtleEngr/WP-store-cf7-file-uploads.tree/main
 Description: Store all files uploded trough Contact Form 7 in your Media Library
 Author: Mircea N., TurtleEngr
 Text Domain: nmr-store-cf7-uploads

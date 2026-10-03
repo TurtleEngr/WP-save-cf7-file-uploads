@@ -1,25 +1,26 @@
-=== Store file uploads for Contact Form 7 ===
+== Store file uploads for Contact Form 7 ===
 Contributors: mirceatm, TurtleEngr
 Tags: contact, form, library, file, upload
 Requires at least: 4.9
-Tested up to: 7.0
+Tested up to: 7.1.2
 Stable tag: VERSION
-License: GPLv2 or later
+License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-When this is active, attachments sent trough Contact Form 7 shortcode
-[file ] will be stored in your Media Library
+When this is active, attachments sent trough Contact Form 7 variable
+[file NAME] will be stored in your Media Library. This enhanced
+version implements some of the Pro features.
 
 == Description ==
 
 By default, [Contact Form
-7](https://wordpress.org/plugins/contact-form-7/) dose not keep data
+7](https://wordpress.org/plugins/contact-form-7/) does not keep data
 it sends trough it's contact forms.  While plugins like
 [Flamingo](https://wordpress.org/plugins/flamingo/) save that data,
 uploaded files are not added to Media Library.  This plugin will save
 uploaded files to Media Library before email is sent by CF7.  This
 plugin will raise an event with the the full file path & name.
-Subscribe to `nmr_create_attachment_file_name` filter to get and/or
+Subscribe to 'nmr_create_attachment_file_name' filter to get and/or
 update data before attachment is added to media library.
 
 `
@@ -31,7 +32,7 @@ function example_callback( $file_name ) {
 add_filter( 'nmr_create_attachment_file_name', 'example_callback', 10, 1 );
 `
 
-Subscribe to `nmr_before_insert_attachment` filter to be able to
+Subscribe to 'nmr_before_insert_attachment' filter to be able to
 change attachment attributes: caption and description are
 ‘post_excerpt’ and ‘post_content’.  For other attributes, check
 documentation for
@@ -47,10 +48,10 @@ add_filter( 'nmr_before_insert_attachment', 'before_insert_attachment_callback',
 `
 
 Optionally, subscribe to
-`nmr_should_skip_save_attachment_to_media_library` filter to be able
+'nmr_should_skip_save_attachment_to_media_library' filter to be able
 to skip saving the attachment to media library: return true to skip,
-false is the default behaviour that saves the attachment to media
-library. Filter `nmr_before_insert_attachment` will not be called if
+false is the default behavior that saves the attachment to media
+library. Filter 'nmr_before_insert_attachment' will not be called if
 skip was true.
 
 `
@@ -63,8 +64,8 @@ add_filter( 'nmr_should_skip_save_attachment_to_media_library', 'skip_media_libr
 `
 
 This plugin will send the final attachment id if you are interested in
-getting other details, like attachment url.  Listen to
-`nmr_create_attachment_id_generated` action.
+getting other details, like attachment URL.  Listen to
+'nmr_create_attachment_id_generated' action.
 
 `
 // The action callback function.
@@ -77,19 +78,7 @@ add_action( 'nmr_create_attachment_id_generated', 'example_callback_id_generated
 
 = Docs & Support =
 
-Check the [support
-forum](https://wordpress.org/support/plugin/store-file-uploads-for-contact-form-7/)
-on WordPress.org. If you can't locate any topics that pertain to your
-particular issue, post a new topic for it.
-
-= Store file uploads for Contact Form 7 Needs Your Support =
-
-It is hard to continue development and support for this free plugin
-without contributions from users like you. If you enjoy using -Store
-file uploads for Contact Form 7- and find it useful, please consider
-[__making a donation__](https://paypal.me/mirceatm). Your donation
-will help encourage and support the plugin's continued development and
-better user support.
+See: https://github.com/TurtleEngr/WP-store-cf7-file-uploads
 
 = Privacy Notices =
 
@@ -101,32 +90,26 @@ With the default configuration, this plugin, in itself, does not:
 * use cookies.
 
 It will, however store uploaded files trough Contact Form 7 in
-Wordpress Media Library.  Make sure your website users are aware of
+WordPress Media Library.  Make sure your website users are aware of
 this fact!!!
 
 == Installation ==
 
-1. Upload the entire  folder to the `/wp-content/plugins/` directory.
+1. Upload the entire  folder to the '/wp-content/plugins/' directory.
 1. Activate the plugin through the 'Plugins' menu in WordPress.
 
 After that check Media Library for uploaded files.
-
-
-== Screenshots ==
-
-1. Settings tab — per-form control (save toggle, custom folder, rename pattern per form), global options, and developer hooks info. Pro features shown as locked preview.
-2. Upload Log tab (Pro) — every CF7 file upload listed with form name, field, date, file size, and a direct view/download link.
 
 == Pro Version ==
 
 Need more? The **Pro version** adds 13 features:
 
 * Per-form control — choose which forms save files, set custom folder and rename pattern per form
-* Auto-rename — rename files using patterns like `{name}-{date}.{ext}` from other CF7 fields
+* Auto-rename — rename files using patterns like '{name}-{date}.{ext}' from other CF7 fields
 * Unique filenames — automatically avoid overwriting files with the same name
 * Custom upload folder — save files to a specific subfolder per form
-* File URL in email — replace `[file]` mail tag with a clickable link instead of an attachment
-* Skip-mail compatibility — save files even when CF7's `skip_mail: on` is set
+* File URL in email — replace '[file]' mail tag with a clickable link instead of an attachment
+* Skip-mail compatibility — save files even when CF7's 'skip_mail: on' is set
 * Upload log — admin screen listing every uploaded file with form, date, size, and download link
 * Private files — store files outside the Media Library with access protection
 * Admin notification — receive an email with file link on every upload
@@ -145,7 +128,7 @@ This is an enhanced version of store-file-uploads-for-contact-form-7
 (version 1.3.0). It implements some of the pro features.
 
 1. Normalize file names. File names can only contain letters in the
-   set: [a-zA-Z0-9.-_]. Convert any letters not in the set to a "_".
+   set: [a-zA-Z0-9.-_]. Convert any letters not in that set to a "_".
 2. Only graphic files are allowed. Log skipped files.
 3. Avoid overwriting existing files, by appending "_N" to base name.
 
