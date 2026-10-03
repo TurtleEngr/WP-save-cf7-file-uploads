@@ -1,7 +1,7 @@
 WP-store-cf7-file-uploads
 =========================
 
-![version](https://img.shields.io/badge/version-1.3.3-orange.svg)
+![version](https://img.shields.io/badge/version-1.4.0-orange.svg)
 
 ![WordPress](https://img.shields.io/badge/WordPress-Compatible-blue.svg)
 
