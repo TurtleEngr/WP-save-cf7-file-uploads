@@ -1,0 +1,51 @@
+* Submit plugin to wordpress.org
+
+** Prompt 1
+
++ Modify the store-cf7-file-uploads.php file and the readme.txt files
+  to comply with the wordpress.org submission guidelines that are
+  define below.
+
++ Follow the directions in CLAUDE.org
+
+*** Submission Guidelines
++ https://developer.wordpress.org/plugins/wordpress-org/detailed-plugin-guidelines/
++ https://developer.wordpress.org/plugins/plugin-basics/
++ https://developer.wordpress.org/plugins/wordpress-org/how-your-readme-txt-works/
++ https://developer.wordpress.org/apis/security/
+
+*** Code locations
++ The code for this plugin store-cf7-file-uploads can be found at:
+  https://github.com/TurtleEngr/WP-store-cf7-file-uploads/
+
+** Response 1
+
+I'll start by pulling the repo to see the current code.Now the guideline pages, so I'm checking against the current text rather than memory.The "Common issues" page is what reviewers actually check against, so I'll read that too.Before editing, let me check two things that affect choices: the upstream plugin's license (decides whether I can write "GPLv2 or later") and the version history (decides the changelog entry).The diff shows only intended changes. PHP isn't installed yet, so let me get it for lint and a test.Lint passes. Now a stubbed WordPress test covering each path, including the new extension check and the admin notice.All 12 pass, and direct access to the file is blocked. Now the readme (keeping its CRLF line endings).Last check: every hook name in the readme matches one the code actually calls.Both files are complete replacements. The PHP file passes `php -l`, and a stubbed test of 12 cases passed: saving, `_N` naming, the content check, the new extension check, a failed insert, skip, the ID action, and the admin notice. The readme is 5.2 KB, keeps its CRLF line endings, and its four hook names match the code exactly.
+
+**Changes to store-cf7-file-uploads.php**
+
+1. *Direct file access.* Added the `ABSPATH` check at the top. Reviewers ask for this at the top of all PHP files that could run code when accessed directly.
+2. *Prefix.* Changed `bar_` to `storecf7_` in all functions and hooks. The review team says not to use 2- or 3-letter prefixes anymore.
+3. *Text domain.* Changed it to `store-cf7-file-uploads`, because the translation domain needs to be the same as the plugin slug. I removed `Domain Path: /languages/` because that folder doesn't exist.
+4. *Headers.* Added `License`, `License URI`, `Requires at least` and `Requires Plugins: contact-form-7`. Since WordPress 5.8, `Requires at least` is read from the main PHP file, not the readme. I also fixed the typos in the description and changed "all files" to "image files", which is accurate now.
+5. *Admin notice.* It is now escaped and translatable, and it is shown only to users who can activate plugins.
+6. *error_log.* I kept all three calls, because your earlier spec asked for logging. Each one has a `phpcs:ignore` comment so the Plugin Check tool doesn't flag it.
+7. *Security fix.* The file's extension must now also be an allowed image type. Before this, a GIF that was also valid HTML, uploaded as `x.html`, passed the content check. It was then saved as `.html` in uploads, which is a stored cross-site scripting risk. This only happens if a form's `filetypes:` option allows `.html`, but the plugin shouldn't depend on that setting.
+
+**Changes to readme.txt**
+
+The first line had only two `=` signs, so I fixed it to three. The three paragraphs before `== Description ==` would all have been read as the short description, so I replaced them with one 97-character line and moved the derivation note into the Description. I changed "Tested up to" from 7.1.2 to 7.1, because the field ignores minor versions. I updated the hook names, fixed the typos, made the privacy section accurate (Media Library entries are database records that may hold personal data), and added a 1.4.0 changelog entry.
+
+**Please confirm these**
+
+- *Plugin name.* "Store file uploads for Contact Form 7" is the exact name of mirceatm's plugin, which is already in the directory. WordPress.org builds the slug from the name, so I renamed it "Store CF7 File Uploads" to match your file name. Change it if you'd prefer a different name.
+- *Prefix `storecf7_`.* Any site code that hooks the `bar_` names will break. The changelog says so.
+- *License stays "GPLv2", not "or later".* The upstream code doesn't say "or later", so I didn't relicense it.
+- *Contributors.* `TurtleEngr` must be your exact WordPress.org username. Also, mirceatm may not want this fork listed on their profile.
+- *Version.* VERSION and VERSION-dev are both 1.4.0, so `make save` will require a version bump first. If you go to 1.4.1, rename the changelog heading too.
+- *Tested up to 7.1.* Only keep this if you've actually tested on 7.1.
+
+**Noticed, but left alone**
+
+- In the Makefile, the `dist/.../readme.txt` rule uses `<$?`. When both VERSION and readme.txt have changed, that becomes `<VERSION readme.txt` and fails. It should be `<readme.txt`.
+- Reviewers may ask why the plugin uses `copy()` instead of WordPress's file functions. Moving a file out of Contact Form 7's temporary folder is a reasonable answer, but be ready to give it.
