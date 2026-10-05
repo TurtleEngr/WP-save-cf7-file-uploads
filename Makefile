@@ -1,11 +1,11 @@
-# Makefile for github.com:TurtleEngr/WP-store-file-uploads-for-contact-form-7
+# Makefile for github.com:TurtleEngr/WP-save-file-uploads-for-contact-form-7
 
 # ----------
 # Macros
 
 SHELL := /bin/bash
 
-mName = store-cf7-file-uploads
+mName = save-cf7-file-uploads
 mProj = WP-$(mName)
 mProduct = dist/$(mName)-VERSION.zip
 
