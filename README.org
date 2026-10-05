@@ -62,7 +62,7 @@ blockquote {
 </head>
 <body>
 #+END_EXPORT
-* WP-store-cf7-file-uploads
+* WP-save-cf7-file-uploads
 
 [[https://img.shields.io/badge/version-VERSION-orange.svg][version]]
 
