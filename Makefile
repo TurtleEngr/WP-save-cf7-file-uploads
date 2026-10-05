@@ -58,7 +58,8 @@ save development : check-dev
 	@echo 'If OK, make publish'
 
 publish release : check-rel
-	git tag -f "ver-$$(cat VERSION)"
+	if [[ "$(mBranch)" != "develop" ]]; then exit 1; fi
+	git tag "ver-$$(cat VERSION)"
 	git push --tags origin develop
 	git co main
 	git pull --tags origin main
