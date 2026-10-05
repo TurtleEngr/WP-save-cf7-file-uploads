@@ -137,7 +137,7 @@ dist/$(mName)/$(mName).php : VERSION $(mName).php
 	sed "s/VERSION/$$(cat VERSION)/" <$(mName).php >$@
 
 dist/$(mName)/readme.txt : VERSION readme.txt
-	sed "s/VERSION/$$(cat VERSION)/" <$? >$@
+	sed "s/VERSION/$$(cat VERSION)/" <readme.txt >$@
 
 dist/$(mName)/LICENSE : LICENSE
 	-cp $? $@
