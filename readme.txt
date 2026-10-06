@@ -29,35 +29,15 @@ is added to the name instead.
 
 This plugin requires the "Contact Form 7" and "Flamingo" plugins.
 
-This plugin is adds some enhancements to version 1.3.0 of
+This plugin adds some enhancements to version 1.3.0 of
 [Store file uploads for Contact Form 7](https://wordpress.org/plugins/store-file-uploads-for-contact-form-7/)
 by Mircea N.
-
-= Docs, Support and Source Code =
-
-See: https://github.com/TurtleEngr/WP-save-cf7-file-uploads
-
-Issues can be posted there. And the README.md will point to where you
-can find the latest "development" versions.
-
-= Privacy Notices =
-
-This plugin, in itself, does not:
-
-* track users;
-* send any data to external servers;
-* use cookies.
-
-It does save files uploaded through Contact Form 7 in the WordPress
-Media Library, which adds an attachment entry to the database for each
-file. These files may contain personal data, and they are kept until
-you delete them. Make sure the people who use your forms know this.
 
 == Installation ==
 
 1. Install and activate the Contact Form 7 plugin.
-2. Install and activate the Flamingo plugin.
-3. Install and activate this plugin from wordpress.org
+1. Install and activate the Flamingo plugin.
+1. Install and activate this plugin from wordpress.org
 
 In the "Additional Settings" tab for a contact form make sure
 "do_not_store:" is not "true."  Now, image files uploaded with a
@@ -80,10 +60,16 @@ Updated to follow the wordpress.org plugin guidelines.
 
 = 1.3.1 =
 
-This is an enhanced version of "store-file-uploads-for-contact-form-7"
-(version 1.3.0).
+Enhance "store-file-uploads-for-contact-form-7" (version 1.3.0).
 
 1. Normalize file names. File names can only contain letters in the
    set: [a-zA-Z0-9._-]. Convert any letters not in that set to a "_".
 2. Only graphic files are allowed. Log skipped files.
 3. Avoid overwriting existing files, by appending "_N" to base name.
+
+== Support, Source Code, and more Documentation  ==
+
+See: https://github.com/TurtleEngr/WP-save-cf7-file-uploads
+
+Issues can be posted there. And the README.md will point to where you
+can find the latest downloadable "development" versions.
