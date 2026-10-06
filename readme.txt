@@ -1,5 +1,5 @@
 === Save CF7 File Uploads ===
-Contributors: mirceatm, TurtleEngr
+Contributors: TurtleEngr
 Tags: contact, form, library, file, upload
 Requires at least: 4.9
 Tested up to: 7.1
@@ -22,11 +22,12 @@ field to the Media Library before the email is sent.
 Only image files are saved. The type is checked from the file
 content, and the file extension must also be an allowed image type.
 Other files are skipped, and a line is written to the PHP error log.
+
 File names are reduced to the characters a-z, A-Z, 0-9, ".", "_" and
-"-", and an existing file is never overwritten: "_1", "_2", and so on
+"-", and existing files are never overwritten: "_1", "_2", and so on
 is added to the name instead.
 
-This plugin requires the Contact Form 7 plugin.
+This plugin requires the "Contact Form 7" and "Flamingo" plugins.
 
 This plugin is adds some enhancements to version 1.3.0 of
 [Store file uploads for Contact Form 7](https://wordpress.org/plugins/store-file-uploads-for-contact-form-7/)
@@ -35,6 +36,9 @@ by Mircea N.
 = Docs, Support and Source Code =
 
 See: https://github.com/TurtleEngr/WP-save-cf7-file-uploads
+
+Issues can be posted there. And the README.md will point to where you
+can find the latest "development" versions.
 
 = Privacy Notices =
 
@@ -55,10 +59,15 @@ you delete them. Make sure the people who use your forms know this.
 2. Install and activate the Flamingo plugin.
 3. Install and activate this plugin from wordpress.org
 
-After that, image files uploaded with a Contact Form 7 form will
-appear in the Media Library.
+In the "Additional Settings" tab for a contact form make sure
+"do_not_store:" is not "true."  Now, image files uploaded with a
+"Contact Form 7" form will appear in the Media Library.
 
 == Changelog ==
+
+= 1.4.1 =
+
+Updated to follow the wordpress.org plugin guidelines.
 
 = 1.4.0 =
 
@@ -71,7 +80,7 @@ appear in the Media Library.
 
 = 1.3.1 =
 
-This is an enhanced version of store-file-uploads-for-contact-form-7
+This is an enhanced version of "store-file-uploads-for-contact-form-7"
 (version 1.3.0).
 
 1. Normalize file names. File names can only contain letters in the
