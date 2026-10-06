@@ -65,7 +65,7 @@ In the "Additional Settings" tab for a contact form make sure
 
 == Changelog ==
 
-= 1.4.1 =
+= 1.4.3 =
 
 Updated to follow the wordpress.org plugin guidelines.
 
