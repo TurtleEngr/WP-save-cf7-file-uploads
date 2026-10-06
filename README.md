@@ -1,15 +1,11 @@
 # WP-save-cf7-file-uploads
 
-![version](https://img.shields.io/badge/version-1.4.1-orange.svg)
+![version](https://img.shields.io/badge/version-1.4.2-orange.svg)
 
 ![WordPress](https://img.shields.io/badge/WordPress-Compatible-blue.svg)
 
 -   This is an enhanced version of
-    \"store-file-uploads-for-contact-form-7 ver 1.3.0.\" It implements
-    some of the Pro features.
-
--   Source, see:
-    <https://github.com/TurtleEngr/WP-store-file-uploads-for-contact-form-7/tree/tags-1.3.0>
+    \"store-file-uploads-for-contact-form-7 ver 1.3.0.\"
 
 ## Enhancements
 
@@ -22,4 +18,16 @@
 
 ## Installation
 
-See: readme.txt
+See: readme.txt for official install directions.
+
+### Development Installs
+
+1.  Install and activate the Contact Form 7 plugin.
+2.  Install and activate the Flamingo plugin.
+3.  Go to:
+    <https://moria.whyayh.com/rel/released/software/own/WP-save-cf7-uploads>
+4.  Then download the save-cf7-file-uploads-VER.zip file you want.
+5.  In WordPress, install with upload plugin, then activate.
+
+In the \"Additional Settings\" tab for a contact form make sure
+\"do~notstore~:\" is not \"true\"
