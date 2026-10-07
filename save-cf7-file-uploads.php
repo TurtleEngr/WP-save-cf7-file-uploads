@@ -6,7 +6,9 @@ Description: Save image files uploaded with Contact Form 7 to your Media Library
 Version: VERSION
 Requires at least: 4.9
 Requires Plugins: contact-form-7, flamingo
-Author: turtleengr
+Requires PHP: 8.0
+Author: TurtleEngr
+Author URI: https://github.com/TurtleEngr
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: save-cf7-file-uploads

@@ -1,7 +1,7 @@
 === Save CF7 File Uploads ===
 Contributors: TurtleEngr
 Tags: contact, form, library, file, upload
-Requires at least: 4.9
+Requires at least: 6.0
 Tested up to: 7.1
 Stable tag: VERSION
 License: GPLv2
@@ -43,6 +43,23 @@ In the "Additional Settings" tab for a contact form make sure
 "do_not_store:" is not "true."  Now, image files uploaded with a
 "Contact Form 7" form will appear in the Media Library.
 
+== Frequently Asked Questions ==
+
+= Where can I get more documentation =
+
+See: https://github.com/TurtleEngr/WP-save-cf7-file-uploads Issues
+
+= Where can I report bug or feature requests? =
+
+Issues and feature requests can be posted there.
+
+= Where can I find newer versions? =
+
+The latest "stable version" can be found as wordpress.org.
+
+See: https://github.com/TurtleEngr/WP-save-cf7-file-uploads#development-installs
+For where to find the latest development versions.
+
 == Changelog ==
 
 = 1.4.3 =
@@ -66,10 +83,3 @@ Enhance "store-file-uploads-for-contact-form-7" (version 1.3.0).
    set: [a-zA-Z0-9._-]. Convert any letters not in that set to a "_".
 2. Only graphic files are allowed. Log skipped files.
 3. Avoid overwriting existing files, by appending "_N" to base name.
-
-== Support, Source Code, and more Documentation  ==
-
-See: https://github.com/TurtleEngr/WP-save-cf7-file-uploads
-
-Issues can be posted there. And the README.md will point to where you
-can find the latest downloadable "development" versions.
