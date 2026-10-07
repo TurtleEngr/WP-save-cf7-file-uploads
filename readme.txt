@@ -3,6 +3,7 @@ Contributors: TurtleEngr
 Tags: contact, form, library, file, upload
 Requires at least: 6.0
 Tested up to: 7.1
+Requires PHP: 8.0
 Stable tag: VERSION
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html

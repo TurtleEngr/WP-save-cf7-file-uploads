@@ -4,7 +4,7 @@ Plugin Name: Save CF7 File Uploads
 Plugin URI: https://github.com/TurtleEngr/WP-save-cf7-file-uploads/
 Description: Save image files uploaded with Contact Form 7 to your Media Library.
 Version: VERSION
-Requires at least: 4.9
+Requires at least: 6.0
 Requires Plugins: contact-form-7, flamingo
 Requires PHP: 8.0
 Author: TurtleEngr
