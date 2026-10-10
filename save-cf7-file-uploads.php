@@ -59,7 +59,7 @@ function scf7fu_fErrorLog($message = null)
 
     if ($message !== null) {
         $message_list[] = $message;
-        error_log(scf7fu_cSlug' . ': ' . $message);
+        error_log(scf7fu_cSlug . ': ' . $message);
     }
     return $message_list;
 }
