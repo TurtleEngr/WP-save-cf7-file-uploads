@@ -1,13 +1,17 @@
-# WP-save-cf7-file-uploads
+WP-save-cf7-file-uploads
+========================
 
-![version](https://img.shields.io/badge/version-1.4.3-orange.svg)
+![version](https://img.shields.io/badge/version-1.4.4-orange.svg)
 
 ![WordPress](https://img.shields.io/badge/WordPress-Compatible-blue.svg)
 
--   This is an enhanced version of
-    \"store-file-uploads-for-contact-form-7 ver 1.3.0.\"
+-   This plugin adds enhancements to \[Store file uploads for Contact
+    Form
+    7\](<https://wordpress.org/plugins/store-file-uploads-for-contact-form-7/>)
+    by Mircea N. (version 1.3.0)
 
-## Enhancements
+Enhancements
+------------
 
 1.  Normalize file names. File names can only contain letters in the
     set: \[a-zA-Z0-9.-\\\_\]. Convert any letters not in the set to a
@@ -16,9 +20,10 @@
 3.  Avoid overwriting existing files, by appending \"\\~N~\" to base
     name.
 
-## Installation
+Installation and Usage
+----------------------
 
-See: readme.txt for official install directions.
+See: readme.txt for official install and usage directions.
 
 ### Development Installs
 

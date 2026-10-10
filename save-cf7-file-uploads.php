@@ -14,6 +14,10 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: save-cf7-file-uploads
 */
 
+/*
+ * Plugin prefix: scf7fu
+ */
+
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -38,14 +42,14 @@ add_action('plugins_loaded', function () {
         });
         return;
     }
-    add_action('wpcf7_before_send_mail', 'savecf7_on_before_cf7_send_mail');
+    add_action('wpcf7_before_send_mail', 'scf7fu_on_before_cf7_send_mail');
 });
 
 /*
  * Replace chars not in [a-zA-Z0-9._-] with "_", then collapse
  *  repeated "_".
  */
-function savecf7_normalize_file_name($file_name)
+function scf7fu_normalize_file_name($file_name)
 {
     $file_name = preg_replace('/[^a-zA-Z0-9._-]/', '_', $file_name);
     return preg_replace('/_+/', '_', $file_name);
@@ -55,7 +59,7 @@ function savecf7_normalize_file_name($file_name)
  * If the file exists, insert "_N" before the extension, N = 1, 2,
  *  ... until unused.
  */
-function savecf7_unique_file_name($file_path)
+function scf7fu_unique_file_name($file_path)
 {
     if (!file_exists($file_path)) {
         return $file_path;
@@ -74,7 +78,7 @@ function savecf7_unique_file_name($file_path)
  * Returns the attachment metadata, or false if the file was not added
  * to the Media Library.
  */
-function savecf7_create_attachment($filename)
+function scf7fu_create_attachment($filename)
 {
     /*
      * The extension must also be an allowed image type, so a file is
@@ -94,15 +98,15 @@ function savecf7_create_attachment($filename)
     }
     $wp_upload_dir = wp_upload_dir();
 
-    $attachFileName = $wp_upload_dir['path'] . '/' . savecf7_normalize_file_name(basename($filename));
-    $attachFileName = apply_filters('savecf7_create_attachment_file_name', $attachFileName);
-    $attachFileName = savecf7_unique_file_name($attachFileName);
+    $attachFileName = $wp_upload_dir['path'] . '/' . scf7fu_normalize_file_name(basename($filename));
+    $attachFileName = apply_filters('scf7fu_create_attachment_file_name', $attachFileName);
+    $attachFileName = scf7fu_unique_file_name($attachFileName);
     if (!copy($filename, $attachFileName)) {
         error_log('Save CF7 File Uploads: copy failed, not saved: ' . $attachFileName);
         return false;
     }
 
-    $skip_save_to_media_library = apply_filters('savecf7_should_skip_save_attachment_to_media_library', false);
+    $skip_save_to_media_library = apply_filters('scf7fu_should_skip_save_attachment_to_media_library', false);
     if ($skip_save_to_media_library) {
         return false;
     }
@@ -114,7 +118,7 @@ function savecf7_create_attachment($filename)
         'post_content'   => '',
         'post_status'    => 'inherit'
     );
-    $attachment = apply_filters('savecf7_before_insert_attachment', $attachment);
+    $attachment = apply_filters('scf7fu_before_insert_attachment', $attachment);
     $attach_id = wp_insert_attachment($attachment, $attachFileName, 0, true);
     if (is_wp_error($attach_id) || !$attach_id) {
         $reason = is_wp_error($attach_id) ? ': ' . $attach_id->get_error_message() : '';
@@ -127,11 +131,11 @@ function savecf7_create_attachment($filename)
     $attach_data = wp_generate_attachment_metadata($attach_id, $attachFileName);
     wp_update_attachment_metadata($attach_id, $attach_data);
 
-    do_action('savecf7_create_attachment_id_generated', $attach_id);
+    do_action('scf7fu_create_attachment_id_generated', $attach_id);
     return $attach_data;
 }
 
-function savecf7_on_before_cf7_send_mail()
+function scf7fu_on_before_cf7_send_mail()
 {
     $submission = WPCF7_Submission::get_instance();
     if ($submission) {
@@ -140,10 +144,10 @@ function savecf7_on_before_cf7_send_mail()
             foreach ($uploaded_files as $filepath) {
                 if (is_array($filepath)) {
                     foreach ($filepath as $value) {
-                        savecf7_create_attachment($value);
+                        scf7fu_create_attachment($value);
                     }
                 } else {
-                    savecf7_create_attachment($filepath);
+                    scf7fu_create_attachment($filepath);
                 }
             }
         }

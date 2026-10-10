@@ -49,3 +49,23 @@ The first line had only two `=` signs, so I fixed it to three. The three paragra
 
 - In the Makefile, the `dist/.../readme.txt` rule uses `<$?`. When both VERSION and readme.txt have changed, that becomes `<VERSION readme.txt` and fails. It should be `<readme.txt`.
 - Reviewers may ask why the plugin uses `copy()` instead of WordPress's file functions. Moving a file out of Contact Form 7's temporary folder is a reasonable answer, but be ready to give it.
+** Prompt 2
++ Modify the store-cf7-file-uploads.php file.
++ With a function replace error_log() with a function named
+  scf7fu_error_log(), which will save the error messages to a
+  global variable (or array).
++ When the post is created from the template, append the saved error
+  messages to the end of the post.
++ Update the readme.txt and README.org files with how any error
+  messages will be appended the end of a post.
+
++ Do not ask for write access to github; deliver the changes as a download.
+
++ Follow the directions in CLAUDE.org, but ignore the naming
+  convention part.
+
+*** Code location
++ The code for this plugin store-cf7-file-uploads can be found at:
+  https://github.com/TurtleEngr/WP-store-cf7-file-uploads/
+
+** Response 2
