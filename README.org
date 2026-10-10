@@ -79,6 +79,22 @@ blockquote {
 2. Only graphic files are allowed. Skipped files are logged.
 3. Avoid overwriting existing files, by appending "\_N" to base name.
 
+** Error Messages
+
+Error messages are written to the PHP error log with
+=scf7fu_error_log()=. That function also saves them in a list in
+memory. Calling =scf7fu_error_log()= with no argument returns the list.
+
+[[https://github.com/TurtleEngr/WP-contact-2-post][contact-2-post]] appends the
+saved messages to the end of the post it creates from the
+submission.
+
+The list is a =static= variable in the function, and each form
+submission is one PHP request with its own memory. So the list only
+has the messages for the submission that created the post, even when
+several people submit forms at the same time. The messages are not
+kept after the request ends; the PHP error log still has them.
+
 ** Installation and Usage
 
 See: readme.txt for official install and usage directions.

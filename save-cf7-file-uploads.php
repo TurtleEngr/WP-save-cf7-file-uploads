@@ -5,22 +5,24 @@
  * Description: Save image files uploaded with Contact Form 7 to your Media Library.
  * Version: VERSION
  * Requires at least: 6.0
- * Requires Plugins: flamingo
+ * Requires Plugins: contact-form-7, flamingo
  * Requires PHP: 8.0
  * Author: TurtleEngr
  * Author URI: https://github.com/TurtleEngr
  * License: GPLv2
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: save-cf7-file-uploads
  */
 
 /*
- * Plugin prefix: scf7fu
+ * Constant prefix: scf7fu_c
+ * Function prefix: scf7fu_f
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
+
+const scf7fu_cSlug = 'save-cf7-uploads-post';
 
 add_action('plugins_loaded', function () {
     if (!class_exists('WPCF7')) {
@@ -42,23 +44,22 @@ add_action('plugins_loaded', function () {
         });
         return;
     }
-    add_action('wpcf7_before_send_mail', 'scf7fu_on_before_cf7_send_mail');
+    add_action('wpcf7_before_send_mail', 'scf7fu_fOnBeforeCf7SendMail');
 });
 
 /*
  * Save an error message for the current submission, and write it to
  * the PHP error log. Call with no argument to get the saved list.
- * The list is kept only in memory, so it holds the messages for this
- * request (one form submission) only. Other plugins, such as Contact
- * 2 Post, can read it to show the messages.
+ * The list is also kept in memory for this request (one form submission).
+ * Other plugins, such as Contact 2 Post, can read it to show  the messages.
  */
-function scf7fu_error_log($message = null)
+function scf7fu_fErrorLog($message = null)
 {
     static $message_list = array();
 
     if ($message !== null) {
         $message_list[] = $message;
-        error_log('Save CF7 File Uploads: ' . $message);
+        error_log(scf7fu_cSlug' . ': ' . $message);
     }
     return $message_list;
 }
@@ -67,7 +68,7 @@ function scf7fu_error_log($message = null)
  * Replace chars not in [a-zA-Z0-9._-] with "_", then collapse
  *  repeated "_".
  */
-function scf7fu_normalize_file_name($file_name)
+function scf7fu_fNormalizeFileName($file_name)
 {
     $file_name = preg_replace('/[^a-zA-Z0-9._-]/', '_', $file_name);
     return preg_replace('/_+/', '_', $file_name);
@@ -77,7 +78,7 @@ function scf7fu_normalize_file_name($file_name)
  * If the file exists, insert "_N" before the extension, N = 1, 2,
  *  ... until unused.
  */
-function scf7fu_unique_file_name($file_path)
+function scf7fu_fUniqueFileName($file_path)
 {
     if (!file_exists($file_path)) {
         return $file_path;
@@ -96,7 +97,7 @@ function scf7fu_unique_file_name($file_path)
  * Returns the attachment metadata, or false if the file was not added
  * to the Media Library.
  */
-function scf7fu_create_attachment($filename)
+function scf7fu_fCreateAttachment($filename)
 {
     /*
      * The extension must also be an allowed image type, so a file is
@@ -105,22 +106,22 @@ function scf7fu_create_attachment($filename)
      */
     $ext_type = wp_check_filetype(basename($filename));
     if (!$ext_type['type'] || strpos($ext_type['type'], 'image/') !== 0) {
-        scf7fu_error_log('file extension not allowed, not saved: ' . basename($filename));
+        scf7fu_fErrorLog('file extension not allowed, not saved: ' . basename($filename));
         return false;
     }
     // Only image types allowed by WordPress, detected from the file content.
     $mime_type = wp_get_image_mime($filename);
     if (!$mime_type || !in_array($mime_type, get_allowed_mime_types(), true)) {
-        scf7fu_error_log('file type not allowed, not saved: ' . basename($filename));
+        scf7fu_fErrorLog('file type not allowed, not saved: ' . basename($filename));
         return false;
     }
     $wp_upload_dir = wp_upload_dir();
 
-    $attachFileName = $wp_upload_dir['path'] . '/' . scf7fu_normalize_file_name(basename($filename));
-    $attachFileName = apply_filters('scf7fu_create_attachment_file_name', $attachFileName);
-    $attachFileName = scf7fu_unique_file_name($attachFileName);
+    $attachFileName = $wp_upload_dir['path'] . '/' . scf7fu_fNormalizeFileName(basename($filename));
+    $attachFileName = apply_filters('scf7fu_fCreateAttachment_file_name', $attachFileName);
+    $attachFileName = scf7fu_fUniqueFileName($attachFileName);
     if (!copy($filename, $attachFileName)) {
-        scf7fu_error_log('copy failed, not saved: ' . $attachFileName);
+        scf7fu_fErrorLog('copy failed, not saved: ' . $attachFileName);
         return false;
     }
 
@@ -140,7 +141,7 @@ function scf7fu_create_attachment($filename)
     $attach_id = wp_insert_attachment($attachment, $attachFileName, 0, true);
     if (is_wp_error($attach_id) || !$attach_id) {
         $reason = is_wp_error($attach_id) ? ': ' . $attach_id->get_error_message() : '';
-        scf7fu_error_log('not added to Media Library, file removed: ' . $attachFileName . $reason);
+        scf7fu_fErrorLog('not added to Media Library, file removed: ' . $attachFileName . $reason);
         wp_delete_file($attachFileName);
         return false;
     }
@@ -149,11 +150,11 @@ function scf7fu_create_attachment($filename)
     $attach_data = wp_generate_attachment_metadata($attach_id, $attachFileName);
     wp_update_attachment_metadata($attach_id, $attach_data);
 
-    do_action('scf7fu_create_attachment_id_generated', $attach_id);
+    do_action('scf7fu_fCreateAttachment_id_generated', $attach_id);
     return $attach_data;
 }
 
-function scf7fu_on_before_cf7_send_mail()
+function scf7fu_fOnBeforeCf7SendMail()
 {
     $submission = WPCF7_Submission::get_instance();
     if ($submission) {
@@ -162,10 +163,10 @@ function scf7fu_on_before_cf7_send_mail()
             foreach ($uploaded_files as $filepath) {
                 if (is_array($filepath)) {
                     foreach ($filepath as $value) {
-                        scf7fu_create_attachment($value);
+                        scf7fu_fCreateAttachment($value);
                     }
                 } else {
-                    scf7fu_create_attachment($filepath);
+                    scf7fu_fCreateAttachment($filepath);
                 }
             }
         }

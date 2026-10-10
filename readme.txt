@@ -24,6 +24,14 @@ Only image files are saved. The type is checked from the file
 content, and the file extension must also be an allowed image type.
 Other files are skipped, and a line is written to the PHP error log.
 
+The error messages for a form submission are also saved in memory.
+If the Contact 2 Post plugin creates a post from that submission, it
+appends them to the end of the post, so the post's reviewer can see
+which uploads were not saved. Only the messages for that submission
+are appended, even when several people submit forms at the same
+time. Other plugins can get the list by calling scf7fu_error_log()
+with no argument.
+
 File names are reduced to the characters a-z, A-Z, 0-9, ".", "_" and
 "-", and existing files are never overwritten: "_1", "_2", and so on
 is added to the name instead.
