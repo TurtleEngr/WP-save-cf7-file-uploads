@@ -20,52 +20,255 @@
 
 ** Response 1
 
-I'll start by pulling the repo to see the current code.Now the guideline pages, so I'm checking against the current text rather than memory.The "Common issues" page is what reviewers actually check against, so I'll read that too.Before editing, let me check two things that affect choices: the upstream plugin's license (decides whether I can write "GPLv2 or later") and the version history (decides the changelog entry).The diff shows only intended changes. PHP isn't installed yet, so let me get it for lint and a test.Lint passes. Now a stubbed WordPress test covering each path, including the new extension check and the admin notice.All 12 pass, and direct access to the file is blocked. Now the readme (keeping its CRLF line endings).Last check: every hook name in the readme matches one the code actually calls.Both files are complete replacements. The PHP file passes `php -l`, and a stubbed test of 12 cases passed: saving, `_N` naming, the content check, the new extension check, a failed insert, skip, the ID action, and the admin notice. The readme is 5.2 KB, keeps its CRLF line endings, and its four hook names match the code exactly.
+- I'll start by pulling the repo to see the current code.Now the
+  guideline pages, so I'm checking against the current text rather
+  than memory.The "Common issues" page is what reviewers actually
+  check against, so I'll read that too.Before editing, let me check
+  two things that affect choices: the upstream plugin's license
+  (decides whether I can write "GPLv2 or later") and the version
+  history (decides the changelog entry).The diff shows only intended
+  changes. PHP isn't installed yet, so let me get it for lint and a
+  test.Lint passes. Now a stubbed WordPress test covering each path,
+  including the new extension check and the admin notice.All 12 pass,
+  and direct access to the file is blocked. Now the readme (keeping
+  its CRLF line endings).Last check: every hook name in the readme
+  matches one the code actually calls.Both files are complete
+  replacements. The PHP file passes =php -l=, and a stubbed test of 12
+  cases passed: saving, =_N= naming, the content check, the new
+  extension check, a failed insert, skip, the ID action, and the admin
+  notice. The readme is 5.2 KB, keeps its CRLF line endings, and its
+  four hook names match the code exactly.
 
-**Changes to store-cf7-file-uploads.php**
+*** *Changes to store-cf7-file-uploads.php*
 
-1. *Direct file access.* Added the `ABSPATH` check at the top. Reviewers ask for this at the top of all PHP files that could run code when accessed directly.
-2. *Prefix.* Changed `bar_` to `storecf7_` in all functions and hooks. The review team says not to use 2- or 3-letter prefixes anymore.
-3. *Text domain.* Changed it to `store-cf7-file-uploads`, because the translation domain needs to be the same as the plugin slug. I removed `Domain Path: /languages/` because that folder doesn't exist.
-4. *Headers.* Added `License`, `License URI`, `Requires at least` and `Requires Plugins: contact-form-7`. Since WordPress 5.8, `Requires at least` is read from the main PHP file, not the readme. I also fixed the typos in the description and changed "all files" to "image files", which is accurate now.
-5. *Admin notice.* It is now escaped and translatable, and it is shown only to users who can activate plugins.
-6. *error_log.* I kept all three calls, because your earlier spec asked for logging. Each one has a `phpcs:ignore` comment so the Plugin Check tool doesn't flag it.
-7. *Security fix.* The file's extension must now also be an allowed image type. Before this, a GIF that was also valid HTML, uploaded as `x.html`, passed the content check. It was then saved as `.html` in uploads, which is a stored cross-site scripting risk. This only happens if a form's `filetypes:` option allows `.html`, but the plugin shouldn't depend on that setting.
+1. *Direct file access.* Added the =ABSPATH= check at the
+   top. Reviewers ask for this at the top of all PHP files that could
+   run code when accessed directly.
+2. *Prefix.* Changed =bar_= to =storecf7_= in all functions and
+   hooks. The review team says not to use 2- or 3-letter prefixes
+   anymore.
+3. *Text domain.* Changed it to =store-cf7-file-uploads=, because the
+   translation domain needs to be the same as the plugin slug. I
+   removed =Domain Path: /languages/= because that folder doesn't
+   exist.
+4. *Headers.* Added =License=, =License URI=, =Requires at least= and
+   =Requires Plugins: contact-form-7=. Since WordPress 5.8, =Requires
+   at least= is read from the main PHP file, not the readme. I also
+   fixed the typos in the description and changed "all files" to
+   "image files", which is accurate now.
+5. *Admin notice.* It is now escaped and translatable, and it is shown
+   only to users who can activate plugins.
+6. *error_log.* I kept all three calls, because your earlier spec
+   asked for logging. Each one has a =phpcs:ignore= comment so the
+   Plugin Check tool doesn't flag it.
+7. *Security fix.* The file's extension must now also be an allowed
+   image type. Before this, a GIF that was also valid HTML, uploaded
+   as =x.html=, passed the content check. It was then saved as =.html=
+   in uploads, which is a stored cross-site scripting risk. This only
+   happens if a form's =filetypes:= option allows =.html=, but the
+   plugin shouldn't depend on that setting.
 
-**Changes to readme.txt**
+*** *Changes to readme.txt*
 
-The first line had only two `=` signs, so I fixed it to three. The three paragraphs before `== Description ==` would all have been read as the short description, so I replaced them with one 97-character line and moved the derivation note into the Description. I changed "Tested up to" from 7.1.2 to 7.1, because the field ignores minor versions. I updated the hook names, fixed the typos, made the privacy section accurate (Media Library entries are database records that may hold personal data), and added a 1.4.0 changelog entry.
+- The first line had only two === signs, so I fixed it to three. The
+  three paragraphs before === Description === would all have been read
+  as the short description, so I replaced them with one 97-character
+  line and moved the derivation note into the Description. I changed
+  "Tested up to" from 7.1.2 to 7.1, because the field ignores minor
+  versions. I updated the hook names, fixed the typos, made the
+  privacy section accurate (Media Library entries are database records
+  that may hold personal data), and added a 1.4.0 changelog entry.
 
-**Please confirm these**
+*** *Please confirm these*
 
-- *Plugin name.* "Store file uploads for Contact Form 7" is the exact name of mirceatm's plugin, which is already in the directory. WordPress.org builds the slug from the name, so I renamed it "Store CF7 File Uploads" to match your file name. Change it if you'd prefer a different name.
-- *Prefix `storecf7_`.* Any site code that hooks the `bar_` names will break. The changelog says so.
-- *License stays "GPLv2", not "or later".* The upstream code doesn't say "or later", so I didn't relicense it.
-- *Contributors.* `TurtleEngr` must be your exact WordPress.org username. Also, mirceatm may not want this fork listed on their profile.
-- *Version.* VERSION and VERSION-dev are both 1.4.0, so `make save` will require a version bump first. If you go to 1.4.1, rename the changelog heading too.
+- *Plugin name.* "Store file uploads for Contact Form 7" is the exact
+  name of mirceatm's plugin, which is already in the
+  directory. WordPress.org builds the slug from the name, so I renamed
+  it "Store CF7 File Uploads" to match your file name. Change it if
+  you'd prefer a different name.
+- *Prefix =storecf7_=.* Any site code that hooks the =bar_= names will
+  break. The changelog says so.
+- *License stays "GPLv2", not "or later".* The upstream code doesn't
+  say "or later", so I didn't relicense it.
+- *Contributors.* =TurtleEngr= must be your exact WordPress.org
+  username. Also, mirceatm may not want this fork listed on their
+  profile.
+- *Version.* VERSION and VERSION-dev are both 1.4.0, so =make save=
+  will require a version bump first. If you go to 1.4.1, rename the
+  changelog heading too.
 - *Tested up to 7.1.* Only keep this if you've actually tested on 7.1.
 
-**Noticed, but left alone**
+*** *Noticed, but left alone*
 
-- In the Makefile, the `dist/.../readme.txt` rule uses `<$?`. When both VERSION and readme.txt have changed, that becomes `<VERSION readme.txt` and fails. It should be `<readme.txt`.
-- Reviewers may ask why the plugin uses `copy()` instead of WordPress's file functions. Moving a file out of Contact Form 7's temporary folder is a reasonable answer, but be ready to give it.
+- In the Makefile, the =dist/.../readme.txt= rule uses =<$?=. When
+  both VERSION and readme.txt have changed, that becomes =<VERSION
+  readme.txt= and fails. It should be =<readme.txt=.
+- Reviewers may ask why the plugin uses =copy()= instead of
+  WordPress's file functions. Moving a file out of Contact Form 7's
+  temporary folder is a reasonable answer, but be ready to give it.
+
 ** Prompt 2
-+ Modify the store-cf7-file-uploads.php file.
-+ With a function replace error_log() with a function named
-  scf7fu_error_log(), which will save the error messages to a
-  global variable (or array).
-+ When the post is created from the template, append the saved error
-  messages to the end of the post.
-+ Update the readme.txt and README.org files with how any error
-  messages will be appended the end of a post.
 
-+ Do not ask for write access to github; deliver the changes as a download.
-
-+ Follow the directions in CLAUDE.org, but ignore the naming
-  convention part.
-
-*** Code location
 + The code for this plugin store-cf7-file-uploads can be found at:
   https://github.com/TurtleEngr/WP-store-cf7-file-uploads/
++ Rather then calling error_log(), replace that with a function named
+  scf7fu_error_log(), which will save the error messages to a file.
++ The plugin contact-2-post.php at
+  https://github.com/TurtleEngr/WP-contact-2-post will append any
+  saved error message to the post it creates.
++ Don't make any changes, just suggest some ways for how and where the
+  error messages can be saved. Also, multiple people could be running
+  the plugins, so there needs to be a way to only append the error
+  messages for the contact-form that is used to generate the post.
 
 ** Response 2
+
+- I'll look at how contact-2-post creates its post, so the suggestions
+  fit what each plugin can see.
+
+- I've only read the code; nothing has been changed.
+
+*** *The key fact:*
+a single CF7 submission runs in one PHP request, and every step
+happens in this order inside it:
+
+1. =save-cf7-file-uploads= checks files in =wpcf7_before_send_mail=.
+2. Flamingo saves the message in =wpcf7_submit=.
+3. =contact-2-post= creates the post in =wpcf7_after_flamingo=.
+
+Each request gets its own PHP memory. So when two people submit at the
+same moment, their error lists can't mix unless they are written
+somewhere shared, like a file. A shared file needs a per-submission
+key. The form ID alone isn't enough, because two people can be filling
+in the same form at once.
+
+*** *Option 1: keep the errors in memory, with no file (simplest).*
+
+=scf7fu_error_log()= appends to a =static= array and returns it, just
+like =fC2pSaveAttachId()= does now in contact-2-post. Then
+contact-2-post calls =scf7fu_error_log()= with no argument (guarded by
+=function_exists=) and appends the list to the post. It is isolated
+per submission automatically, needs no cleanup, and is about 10
+lines. The downside is that the messages last only for that
+request. You could also have it still call =error_log()= so the server
+log keeps a copy.
+
+*** *Option 2: save the errors in Flamingo's message meta.*
+Hook Flamingo's =flamingo_add_inbound= filter (in
+=class-inbound-message.php=) and add the errors to
+=$args['meta']=. Contact-2-post already loads the message with =new
+Flamingo_Inbound_Message($id)=, so it reads them from
+=$tMsg->meta=. The errors stay tied to exactly that submission, show
+up in the Flamingo admin, and last after the request. The cost is one
+more hook. This filter runs for every Flamingo channel, so check that
+a CF7 submission is active first.
+
+*** *Option 3: write a file per submission.*
+Put the file in =wp_upload_dir()['basedir'] . '/scf7fu-errors/'=,
+named with a key made once per request, for example
+=wp_generate_uuid4()= kept in a static. Contact-2-post then needs that
+key, which has to come through a function or action anyway, much as in
+Option 1. It reads the file and deletes it afterwards. This is the
+most code, and it needs file locking and cleanup of files that are
+never used, for example when =create_post= is off or the submission is
+spam. It also needs an =index.php= or =.htaccess= file so the error
+files can't be browsed. The only time it's worth it is if post
+creation might later move to a separate request, such as cron.
+
+*** *Option 4: one shared log file.*
+Lines like =time | form_id | submission_key | message=, written with
+=FILE_APPEND | LOCK_EX=. This is good for an audit trail, but
+contact-2-post would have to read and filter it on every post. It also
+still needs the per-submission key, so it doesn't fix the matching
+problem by itself.
+
+*** *My suggestion:*
+Option 1 if the errors only need to appear in the post. Option 2 if
+you also want to keep a record. A file adds keys, locking and cleanup
+to solve a problem that one request already solves for free.
+
+*** *Bug I noticed (left alone):*
+contact-2-post hooks =nmr_create_attachment_id_generated=, but
+save-cf7-file-uploads now fires
+=scf7fu_create_attachment_id_generated=. Its README says
+=savecf7_...=. As a result, uploaded images are never attached to the
+post or set as its featured image.
+
+*** Which option do you want to go with?
+
+** Prompt 3
+
++ Go with option 1.
++ Fix the bug in contact-2-post.
+
++ Do not request access to github to make changes, just provide the
+  changed files in a download.
+
+** Response 2
+
+I'll add =scf7fu_error_log()= to save-cf7-file-uploads, make
+contact-2-post append the messages to its post and fix the hook name,
+then test both together.
+
+My =sed= also rewrote the =error_log()= call inside the new function,
+which would make it call itself forever. Fixing that line.
+
+Now the save-cf7-file-uploads docs.
+
+Now the contact-2-post docs: the wrong hook name in README.org, and a
+note on the appended errors.
+
+Both PHP files are edited. Now a stubbed WordPress test that loads
+both plugins and runs a submission through the same hook order as a
+real request.
+
+Two gaps in my test stubs, not the plugins: a missing WordPress
+=OBJECT= constant and a test file name containing =/=.
+
+Both plugins are changed. The zip =cf7-error-log-changes.zip= has the
+complete files, one folder per repo, ready to copy over your clones.
+
+*** *save-cf7-file-uploads*
+- I added =scf7fu_error_log($message = null)=. It keeps the messages
+  in a =static= array, and calling it with no argument returns the
+  list.
+- All four =error_log()= calls now use it.
+- It also still writes to the PHP error log, with the same "Save CF7
+  File Uploads: " prefix as before. Without that, sites that don't run
+  contact-2-post would lose their error logging.
+- =readme.txt= and =README.org= explain how the messages get appended
+  to the post, and why they only come from the submission that made
+  it.
+
+*** *contact-2-post*
+- *Bug fix:* it now listens for
+  =scf7fu_create_attachment_id_generated=, so uploaded images are
+  attached to the post and set as its featured image. I kept the
+  =nmr_= hook too, because the readme says the upstream
+  "store-file-uploads… Pro" plugin also works, and that plugin still
+  fires =nmr_=.
+- If there are any errors, a paragraph that starts with "Upload
+  errors:" is added at the end of the post, with one message per
+  line. The messages are escaped, and =[ ]= are encoded, because they
+  contain submitted file names. It works fine when
+  save-cf7-file-uploads isn't installed.
+- =submit.php= (the test fixture) called =nmr_create_attachment()=,
+  which would cause a fatal error. It now calls
+  =scf7fu_create_attachment()=.
+- I fixed the wrong hook name (=savecf7_=) in =README.org= and
+  documented the appended errors in both readmes.
+
+*** *Checked:*
+all three PHP files pass =php -l=. I also ran a stubbed WordPress
+test, one submission per process, with both plugins loaded. In it, the
+errors were appended, a clean submission got none, the hook fix
+attached the image, an =<script>…[gallery]= file name was escaped, and
+contact-2-post ran fine on its own.
+
+*** *To check:*
+- Two of the messages, "copy failed" and "not added to Media Library",
+  include the full server path of the file. If such a post is
+  published, that path will be public. I left the messages as they
+  were.
+- I didn't change any version numbers or changelogs, so add those when
+  you run =make incPatch=.
